@@ -44,6 +44,18 @@ return {
 			vim.lsp.enable("nil_ls")
 
 			-- yamlls (installed via nix: yaml-language-server)
+			-- SchemaStore auto-matches schemas by file path, which false-positives
+			-- badly (e.g. any config/services.yaml gets treated as Symfony DI
+			-- config regardless of content) -- disable it and rely on manual
+			-- yaml.schemas entries if/when we need specific schema validation.
+			vim.lsp.config("yamlls", {
+				settings = {
+					yaml = {
+						schemaStore = { enable = false },
+						schemas = {},
+					},
+				},
+			})
 			vim.lsp.enable("yamlls")
 
 			vim.diagnostic.config({
