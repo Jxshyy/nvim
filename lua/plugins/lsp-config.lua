@@ -1,5 +1,6 @@
 return {
 	{
+		-- Mason only for LSPs not available in nixpkgs (e.g. ansiblels)
 		"mason-org/mason.nvim",
 		config = function()
 			require("mason").setup()
@@ -9,8 +10,6 @@ return {
 		"mason-org/mason-lspconfig.nvim",
 		opts = {
 			ensure_installed = {
-				"lua_ls",
-				"yamlls",
 				"ansiblels",
 			},
 		},
@@ -18,6 +17,7 @@ return {
 	{
 		"neovim/nvim-lspconfig",
 		config = function()
+			-- lua_ls (installed via nix: lua-language-server)
 			vim.lsp.config("lua_ls", {
 				root_markers = { ".git", ".luarc.json", ".luarc.jsonc", "lazy-lock.json" },
 				settings = {
@@ -31,6 +31,20 @@ return {
 				},
 			})
 			vim.lsp.enable("lua_ls")
+
+			-- nil_ls: Nix LSP (installed via nix: nil)
+			vim.lsp.config("nil_ls", {
+				root_markers = { "flake.nix", ".git" },
+				settings = {
+					["nil"] = {
+						formatting = { command = { "nixpkgs-fmt" } },
+					},
+				},
+			})
+			vim.lsp.enable("nil_ls")
+
+			-- yamlls (installed via nix: yaml-language-server)
+			vim.lsp.enable("yamlls")
 
 			vim.diagnostic.config({
 				virtual_text = true,
